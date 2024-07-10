@@ -3,14 +3,16 @@ NOTE: This document is heavily work-in-progress and its content and formatting a
    
 __________________________________________
 
+<div align=center>
+
 ![img](https://i.imgur.com/GzEatYl.png)
 # Understanding Prometheus: An Introduction
 </div>
 
 Metrics
-> When I was young I wanted to grow tall and to measure it I used height as a metric. I asked my dad to measure my height everyday and keep a table of my height on each day. 
+> When I was young I wanted to grow tall and to measure it I used height as a metric. I asked my dad to measure my height everyday and keep a table of my height on each day. Here, Father = Monitoring System & My Height = Metric
 
-Here, Father is the Monitoring System, the Height is the Metric and the measured values are Metric's values. Similar analogy can be made for Measuring water consumption, weight, etc.
+Similar analogy can be made for Measuring water consumption, weight,  
 
 Metric in Prometheus is a standard for measurement OVER TIME. The last 2 words also help explain Prometheus being a Time-Series Database, where data is collected with Timestamps. 
 
@@ -65,48 +67,44 @@ tion-of-promql>
       - When approximation is not an issue
       - When range of values is not known before like histograms
 
-Setting Up A Server
+## Understanding PromQL   
+Millions of metrics will be stored in TSDB - How to aggregate metrics to understand how app is performing or answer questions like how much traffic is coming to app?    
 
-Understanding PromQL
-Millions of metrics will be stored in TSDB - How to aggregate metrics to understand how app is performing or answer questions like how much traffic is coming to app? 
-
- Use cases of PromQL;
+### Use cases of PromQL:
     - Fetching metrics
     - Aggregating metrics
     - Building dashboards
     - Setup alerts
     
-Comparison with SQL:
+### Comparison with SQL:
 
 [Operators In Prometheus](https://prometheus.io/docs/prometheus/latest/querying/operators/)
 
 | Criterion | SQL | PromQL |	Explanation	|	
 |--|---|---------------------|-----------------|			
-| Viewing a metric | SELECT * FROM prometheus_http_requests_total | prometheus_http_requests_total | In PromQL, its enough to write the metrics |	
-
-| Filtering a metric | SELECT * FROM prometheus_http_requests_total WHERE handler="/api/v1/metadata" | prometheus_http_requests_total{handler="/api/v1/metadata"} | Use {} to provide the label/key-value & operator like = or !=  | 
-
-| Multiple-Filtering (AND) | SELECT * FROM prometheus_http_requests_total WHERE handler="/api/v1/metadata" AND job="prometheus" | prometheus_http_requests_total{handler="/api/v1/metadata", job="prometheus"} | Separate the label-values to be filtered with a comma |
-
-| Multiple-Filtering (OR+Like) | SELECT * FROM prometheus_http_requests_total WHERE handler LIKE "/api/v1/%" handler LIKE OR handler LIKE "/api/v2/%" | prometheus_http_requests_total{handler=~"/api/v2...|api/v1..."} | No result shown - ISSUE |
-
-| Multiple-Filtering (OR) | SELECT * FROM prometheus_http_requests_total WHERE handler="/api/v1/metadata" | prometheus_http_requests_total{handler!~"/api/v1.."} | Incorrect result shown - Equal value still being shown |
+| Viewing a metric | SELECT ** FROM prometheus_http_requests_total | prometheus_http_requests_total | In PromQL, its enough to write the metrics |	
+| Filtering a metric | SELECT ** FROM prometheus_http_requests_total WHERE handler="/api/v1/metadata" | prometheus_http_requests_total{handler="/api/v1/metadata"} | Use {} to provide the label/key-value & operator like = or !=  | 
+| Multiple-Filtering (AND) | SELECT ** FROM prometheus_http_requests_total WHERE handler="/api/v1/metadata" AND job="prometheus" | prometheus_http_requests_total{handler="/api/v1/metadata", job="prometheus"} | Separate the label-values to be filtered with a comma |
+| Multiple-Filtering (OR+Like) | SELECT ** FROM prometheus_http_requests_total WHERE handler LIKE "/api/v1/%" handler LIKE OR handler LIKE "/api/v2/%" | prometheus_http_requests_total{handler=~"/api/v2...|api/v1..."} | No result shown - ISSUE |
+| Multiple-Filtering (OR) | SELECT ** FROM prometheus_http_requests_total WHERE handler="/api/v1/metadata" | prometheus_http_requests_total{handler!~"/api/v1.."} | Incorrect result shown - Equal value still being shown |
 
 Additional querying using PromQL:
     - Finding metrics at a specifc unix time:
-    ```
-    prometheus_http_requests_total@1720606263
-    ```
-    - Finding metrics x d/s/m/h/etc ago **From Current Time**
-    ```
-    # If current time = 12:00 PM, value given will be AT 11:55 AM
-    prometheus_http_requests_total offset 5m 
-    ```
-    - Finding metrics within a specific period **from now**
-    ```
-    # All values between 12:00 PM and 11:55 AM
-    prometheus_http_requests_total[5m]    
-    ```
+ ```
+ prometheus_http_requests_total@1720606263
+ ```
+
+   - Finding metrics x d/s/m/h/etc ago **From Current Time**
+ ```
+ # If current time = 12:00 PM, value given will be AT 11:55 AM
+ prometheus_http_requests_total offset 5m 
+ ```
+   - Finding metrics within a specific period **from now**
+
+ ```
+ # All values between 12:00 PM and 11:55 AM
+ prometheus_http_requests_total[5m]    
+ ```
 
 **Data-Types**
  In Prometheus there are 3 primary datatypes used to represent metrics and their values
@@ -115,9 +113,7 @@ Additional querying using PromQL:
 |--|---|---------------------|-----------------|			
 | Scalar | sum(http_server_requests_seconds_count) | 20 | Simple numeric floating point values - 20 is not associated with any timestamp as its an aggragated value |
 | Instant Vector | http_server_requests_seconds_count | 20@1720606263 | Commonly used in promql queries to fetch current values or instant calc | 
-| Range Vector | http_server_requests_seconds_count[1s] | 21@1720606263 | List of values - range of samples until current time - Helps calculate rates of change, calculating, performing aggregations |
-|               |                                        | 22@1720606264|  |	
-|               |                                        | 23@172060625|  |	
+| Range Vector | http_server_requests_seconds_count[1s] | 21@1720606263 22@1720606264 23@172060625 | List of values - range of samples until current time - Helps calculate rates of change, calculating, performing aggregations |
 
 **Functions**
 Some [important functions](https://prometheus.io/docs/prometheus/latest/querying/functions/) that can be used while querying include:
@@ -139,7 +135,7 @@ sum(prometheus_http_requests_total@1720606263)
 | 10:01:30 | 15 |
 | 10:02:00 | 30 | ---> Checking this
 
-**rate()**
+**read()**
 - Helpful to know how fast or slow the values of metrics are changing
 - Below is our Counter-Metrics, where values are cumulative and only increase : 
 ```
@@ -169,5 +165,4 @@ increase(prometheus_http_requests_total[1m])
 (30-10) = 20 
 (Difference b/w Highest & Lowest value within 1 min) 
 ```
-
 
