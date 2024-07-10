@@ -1,5 +1,5 @@
 <div align=center>
-NOTE: This document is heavily work-in-progress and its content and formatting are liable to major changes everyday.  
+NOTE: This document is heavily work-in-progress and its content and formatting are liable to major changes everyday, until its completion.  
    
 __________________________________________
 
