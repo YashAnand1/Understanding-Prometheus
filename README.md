@@ -108,9 +108,7 @@ Additional querying using PromQL:
 |--|---|---------------------|-----------------|			
 | Scalar | sum(http_server_requests_seconds_count) | 20 | Simple numeric floating point values - 20 is not associated with any timestamp as its an aggragated value |
 | Instant Vector | http_server_requests_seconds_count | 20@1720606263 | Commonly used in promql queries to fetch current values or instant calc | 
-| Range Vector | http_server_requests_seconds_count[1s] | 21@1720606263 | List of values - range of samples until current time - Helps calculate rates of change, calculating, performing aggregations |
-|               |                                        | 22@1720606264|  |	
-|               |                                        | 23@172060625|  |	
+| Range Vector | http_server_requests_seconds_count[1s] | 21@1720606263\n22@1720606264\n23@172060625 | List of values - range of samples until current time - Helps calculate rates of change, calculating, performing aggregations |
 
 **Functions**
 Some [important functions](https://prometheus.io/docs/prometheus/latest/querying/functions/) that can be used while querying include:
