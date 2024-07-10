@@ -1,6 +1,6 @@
 <div align=center>
 
-![img]()
+![img](https://i.imgur.com/GzEatYl.png)
 # Understanding Prometheus: An Introduction
 </div>
 
