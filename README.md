@@ -1,7 +1,7 @@
 
 
 <div align=center>
-NOTE: This document is a work-in-progress and is liable to major changes in the future.
+NOTE: This document is a work-in-progress and is liable to major changes in the future.      
 __________________________________________
 
 ![img](https://i.imgur.com/GzEatYl.png)
