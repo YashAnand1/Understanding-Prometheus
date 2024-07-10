@@ -85,19 +85,21 @@ Millions of metrics will be stored in TSDB - How to aggregate metrics to underst
 
 Additional querying using PromQL:
     - Finding metrics at a specifc unix time:
-    ```
-    prometheus_http_requests_total@1720606263
-    ```
-    - Finding metrics x d/s/m/h/etc ago **From Current Time**
-    ```
-    # If current time = 12:00 PM, value given will be AT 11:55 AM
-    prometheus_http_requests_total offset 5m 
-    ```
-    - Finding metrics within a specific period **from now**
-    ```
-    # All values between 12:00 PM and 11:55 AM
-    prometheus_http_requests_total[5m]    
-    ```
+ ```
+ prometheus_http_requests_total@1720606263
+ ```
+
+   - Finding metrics x d/s/m/h/etc ago **From Current Time**
+ ```
+ # If current time = 12:00 PM, value given will be AT 11:55 AM
+ prometheus_http_requests_total offset 5m 
+ ```
+   - Finding metrics within a specific period **from now**
+
+ ```
+ # All values between 12:00 PM and 11:55 AM
+ prometheus_http_requests_total[5m]    
+ ```
 
 **Data-Types**
  In Prometheus there are 3 primary datatypes used to represent metrics and their values
