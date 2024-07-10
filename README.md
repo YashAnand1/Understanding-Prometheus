@@ -3,8 +3,6 @@ NOTE: This document is heavily work-in-progress and its content and formatting a
    
 __________________________________________
 
-<div align=center>
-
 ![img](https://i.imgur.com/GzEatYl.png)
 # Understanding Prometheus: An Introduction
 </div>
