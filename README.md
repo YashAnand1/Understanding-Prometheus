@@ -10,7 +10,7 @@ __________________________________________
 Metrics
 > When I was young I wanted to grow tall and to measure it I used height as a metric. I asked my dad to measure my height everyday and keep a table of my height on each day.
 
-Here, Father will be the Monitoring System & the Height will be the Metric. Similar analogy can be made for Measuring water consumption, weight,  
+Here, Father will be the Monitoring System & the Height will be the Metric. Similar analogy can be made for Measuring water consumption, weight, etc.
 
 Metric in Prometheus is a standard for measurement OVER TIME. The last 2 words also help explain Prometheus being a Time-Series Database, where data is collected with Timestamps. 
 
