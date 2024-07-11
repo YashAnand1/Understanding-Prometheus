@@ -17,7 +17,7 @@ Prometheus is also a similar Monitoring tool that allows Graphing, Alerting and 
 
 To better understand Monitoring Tools, Targets, Metrics and (Scraping) Interval, consider the following 2 examples of monitoring:
 Real-life Monitoring
-> **shepherd** counting and writing down the **number** of **sheeps** every **8 hours** into a **notebook with timestamps**
+> **shepherd** counting and writing down the **number** of **sheeps** every **8 hours** into a **notebook with timestamps**      
 > **Superset** recording **Redmine Tickets**' daily **attendance** using the **tickets**
 
 Here, the following **rough** comparisons can be made between these examples and Prometheus:
