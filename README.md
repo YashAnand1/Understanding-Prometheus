@@ -7,10 +7,13 @@ __________________________________________
 # Understanding Prometheus: An Introduction
 </div>
 
-Monitoring, Metrics & Prometheus
-Monitoring is a way to actively analyse something to reduce the negative and to possibly increase the positive impacts. Classroom Monitors (C.M.) are a good example for understanding Monitoring as they may actively record the behaviour and performance of students into a Notebook with timestamps while being in class, on various criterias like Attendance, Homework Submission, Attentiveness, Participation, etc.
+## Monitoring & Prometheus         
 
-Prometheus on the other hand is also a similar Monitoring tool that allows Graphing, Alerting and Querying. Like the Classroom example, Prometheus (C.M.) will monitor different **targets** (Students) and record their behaviour and performance into a **Time-Series Database with timestamps** (Notebook with timestamps) at an **Interval** of time for various **Metrics** (criteras). 
+##### Still considering if such analogies should be utilised or not
+
+Monitoring is a way to actively analyse something to reduce the negative and to possibly increase the positive impacts. Taking an example of schools, Class Monitors may perform monitoring by actively recording the behaviour and performance of students into a Notebook at any given time of the day, on various criterias like Attendance, Attentiveness, etc.
+
+Prometheus is also a similar Monitoring tool that allows Graphing, Alerting and Querying. Like the Classroom example, Prometheus (C.M.) will monitor different **targets** (Students) and record their behaviour and performance into a **Time-Series Database with timestamps** (Notebook with timestamps) at an **Interval** of time for various **Metrics** (criteras). 
 
 To better understand Monitoring Tools, Targets, Metrics and (Scraping) Interval, consider the following 2 examples of monitoring:
 Real-life Monitoring
