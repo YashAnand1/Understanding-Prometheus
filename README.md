@@ -1,6 +1,6 @@
 <div align=center>
-NOTE: This document is heavily work-in-progress and its content and formatting are liable to major changes everyday, until its completion.  
-   
+NOTE: This document is a work-in-progress. Its content and formatting are subject to major changes until completion.
+
 __________________________________________
 
 ![img](https://i.imgur.com/GzEatYl.png)
