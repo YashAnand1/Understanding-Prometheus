@@ -80,11 +80,11 @@ Millions of metrics will be stored in TSDB - How to aggregate metrics to underst
 
 | Criterion | SQL | PromQL |	Explanation	|	
 |--|---|---------------------|-----------------|			
-| Viewing a metric | SELECT ** FROM prometheus_http_requests_total | prometheus_http_requests_total | In PromQL, its enough to write the metrics |	
-| Filtering a metric | SELECT ** FROM prometheus_http_requests_total WHERE handler="/api/v1/metadata" | prometheus_http_requests_total{handler="/api/v1/metadata"} | Use {} to provide the label/key-value & operator like = or !=  | 
-| Multiple-Filtering (AND) | SELECT ** FROM prometheus_http_requests_total WHERE handler="/api/v1/metadata" AND job="prometheus" | prometheus_http_requests_total{handler="/api/v1/metadata", job="prometheus"} | Separate the label-values to be filtered with a comma |
-| Multiple-Filtering (OR+Like) | SELECT ** FROM prometheus_http_requests_total WHERE handler LIKE "/api/v1/%" handler LIKE OR handler LIKE "/api/v2/%" | prometheus_http_requests_total{handler=~"/api/v2...|api/v1..."} | No result shown - ISSUE |
-| Multiple-Filtering (OR) | SELECT ** FROM prometheus_http_requests_total WHERE handler="/api/v1/metadata" | prometheus_http_requests_total{handler!~"/api/v1.."} | Incorrect result shown - Equal value still being shown |
+| Viewing a metric | SELECT * FROM prometheus_http_requests_total | prometheus_http_requests_total | In PromQL, its enough to write the metrics |	
+| Filtering a metric | SELECT * FROM prometheus_http_requests_total WHERE handler="/api/v1/metadata" | prometheus_http_requests_total{handler="/api/v1/metadata"} | Use {} to provide the label/key-value & operator like = or !=  | 
+| Multiple-Filtering (AND) | SELECT * FROM prometheus_http_requests_total WHERE handler="/api/v1/metadata" AND job="prometheus" | prometheus_http_requests_total{handler="/api/v1/metadata", job="prometheus"} | Separate the label-values to be filtered with a comma |
+| Multiple-Filtering (OR+Like) | SELECT * FROM prometheus_http_requests_total WHERE handler LIKE "/api/v1/%" handler LIKE OR handler LIKE "/api/v2/%" | prometheus_http_requests_total{handler=~"/api/v2...|api/v1..."} | No result shown - ISSUE |
+| Multiple-Filtering (OR) | SELECT * FROM prometheus_http_requests_total WHERE handler="/api/v1/metadata" | prometheus_http_requests_total{handler!~"/api/v1.."} | Incorrect result shown - Equal value still being shown |
 
 Additional querying using PromQL:
     - Finding metrics at a specifc unix time:
