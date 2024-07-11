@@ -1,27 +1,44 @@
 <div align=center>
-NOTE: This document is a work-in-progress. Its content and formatting are subject to major changes until completion.
-
+NOTE: This document is heavily work-in-progress and its content and formatting are liable to major changes everyday, until its completion.  
+   
 __________________________________________
 
 ![img](https://i.imgur.com/GzEatYl.png)
 # Understanding Prometheus: An Introduction
 </div>
 
-Metrics
-> When I was young I wanted to grow tall and to measure it I used height as a metric. I asked my dad to measure my height everyday and keep a table of my height on each day.
+Monitoring, Metrics & Prometheus
+Monitoring is a way to actively analyse something to reduce the negative and to possibly increase the positive impacts. Classroom Monitors (C.M.) are a good example for understanding Monitoring as they may actively record the behaviour and performance of students into a Notebook with timestamps while being in class, on various criterias like Attendance, Homework Submission, Attentiveness, Participation, etc.
 
-Here, Father will be the Monitoring System & the Height will be the Metric. Similar analogy can be made for Measuring water consumption, weight, etc.
+Prometheus on the other hand is also a similar Monitoring tool that allows Graphing, Alerting and Querying. Like the Classroom example, Prometheus (C.M.) will monitor different **targets** (Students) and record their behaviour and performance into a **Time-Series Database with timestamps** (Notebook with timestamps) at an **Interval** of time for various **Metrics** (criteras). 
 
-Metric in Prometheus is a standard for measurement OVER TIME. The last 2 words also help explain Prometheus being a Time-Series Database, where data is collected with Timestamps. 
+To better understand Monitoring Tools, Targets, Metrics and (Scraping) Interval, consider the following 2 examples of monitoring:
+Real-life Monitoring
+> **shepherd** counting and writing down the **number** of **sheeps** every **8 hours** into a **notebook with timestamps**
+> **Superset** recording **Redmine Tickets**' daily **attendance** using the **tickets**
+
+Here, the following **rough** comparisons can be made between these examples and Prometheus:
+
+<div align=center>
+
+| Term | Prometheus | Shepherd | Superset |	
+|------|----------|----------|------------|	
+| Monitoring Tool | Prometheus | Shepherd | Superset |
+| Target          | Apps, Hardware, Linux Server, Apache Server, etc. being monitored | Sheeps | Redmine |
+| Metrics         | node_cpu_seconds_total, node_filesystem_avail_bytes, node_network_receive_bytes_total, etc. | Number of sheeps  | Tickets |
+| Scraping Interval| More on this later - Basically the interval at which data is written down  | 24h (Daily) | 8h (Daily) |
+| Database        | [TimeSeries DB](https://www.reddit.com/r/Database/comments/1ayaj1b/time_series_database/) | Notebook With Timestamps | N/A - Not actually adding the metrics to a DB |
+</div>
+
+In the following section, we will be better understanding these terms within the context of Prometheus.
+
+## Architecture of Prometheus
 
 Types of Metrics
 
 **1. Counter**
-
    - A metrics type where the value only gets incremented or reset and the
-   only type that works with RATE
-   <https://stackoverflow.com/questions/66674880/understanding-of-rate-func=
-tion-of-promql>
+   [only type that works with RATE](https://stackoverflow.com/questions/66674880/understanding-of-rate-func=tion-of-promql)
       -  Still unclear on WHY rate() only works with Counter
    - **Example**: Height as it only increments or the number of requests made
    to a server
@@ -32,7 +49,6 @@ tion-of-promql>
       - When cumulative data is required
 
 **2. Gauge**
-
    - A metric type used for values that can increase or decrease over time
    - **Example**: Weight as it can increase & decrease or the Memory usage
    - **Use Cases**:
@@ -42,7 +58,6 @@ tion-of-promql>
       required
 
 **3. Histogram**
-
    - A metric type that records frequency of events over a time range or
    buckets (predefined ranges to group metrics)
    - **Example**: Tracking time taken to start PC daily after shutdown or
@@ -56,7 +71,6 @@ tion-of-promql>
       one is not an issue
 
 **4. Summary**
-
    - Further understanding of Quantiles is required to better understand
    this Metrics-type.
    - **Use Cases**:
@@ -117,7 +131,7 @@ Additional querying using PromQL:
 Some [important functions](https://prometheus.io/docs/prometheus/latest/querying/functions/) that can be used while querying include:
 
 sum()
-When we run prometheus_http_requests_total@1720606263, we get all metric-values 
+When we run `prometheus_http_requests_total@1720606263, we get all metric-values 
 at a particular time frame. What if we wish to aggregate them?
 ```
 sum(prometheus_http_requests_total@1720606263)
@@ -164,3 +178,8 @@ increase(prometheus_http_requests_total[1m])
 (Difference b/w Highest & Lowest value within 1 min) 
 ```
 
+Within the context of Gauge Metric-Type, the following is the output of trying to find the values of a Metric sum
+
+https://dev.to/sre_panchanan/decoding-promql-a-deep-dive-into-prometheus-query-language-4h23#scalar
+https://promlabs.com/blog/2020/06/18/the-anatomy-of-a-promql-query/
+Prometheus instant vector vs range vector - https://stackoverflow.com/questions/68223824/prometheus-instant-vector-vs-range-vector
