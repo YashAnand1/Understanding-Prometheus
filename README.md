@@ -29,7 +29,7 @@ The Prometheus related components can be interpreted as follows in this example:
 <div align=center>
 
 | Term | Prometheus |  Odometer | Superset |	
-|------|----------|----|------|------------|	
+|------|----------|---------|------------|	
 | Monitoring Tool | Prometheus  | Fitness Tracker | Superset |
 | Target          | Laptop  | Car | Redmine |
 | Metrics         | node_filesystem_avail_bytes | Distance Travelled  | Tickets |
