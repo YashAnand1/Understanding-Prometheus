@@ -1,5 +1,5 @@
 <div align=center>
-NOTE: This document is heavily work-in-progress and its content and formatting are liable to major changes everyday, until its completion.  
+NOTE: This document is currently a work-in-progress and its content and formatting are liable to major changes everyday, until its completion.  
 
 __________________________________________
 
@@ -8,22 +8,26 @@ __________________________________________
 </div>
 
 ## Monitoring & Prometheus         
-Monitoring is a way of actively observing & analysing something to keep track of progress and to ensure it is working as expected. A use-case for Monitoring Tools include prevention over cure - As something that is about to go wrong in an application, server or a machine, can be prevented through such tools like Prometheus or at least fixed by referring to the information gathered during monitoring. 
+
+##### Still considering if such analogies should be utilised or not
+
+Monitoring is a way of actively observing & analysing something for keeping track of and ensuring the expected progress. With Monitoring Tools, the goal is prevention over cure - As something that is about to go wrong in an application, server or a machine, can be prevented through tools like Prometheus or at least fixed by referring to the information gathered by them during monitoring. 
 
 Prometheus is a similar Monitoring tool that also allows Visualisation, Alerting and Querying. Prometheus can monitor various **Metrics** of various **targets** by **scraping** them at a specified **interval** of time into a **Time-Series Database with timestamps**. As an example, we can monitor and visualise the available FileSystem space using the [`node_filesystem_avail_bytes` Metric](https://prometheus.io/docs/guides/node-exporter/#exploring-node-exporter-metrics-through-the-prometheus-expression-browser) of my laptop or target by recording data at every hour (Scraping Interval) and storing it in its Time-Series Database with timestamps. 
 
 Prometheus and its components can be understood in the following manner:
-- **Prometheus**: A Monitoring Tool that scrapes Metrics periodically from Targets and stores them into TSDB with timestamps
+- **Prometheus**: A Monitoring Tool that scrapes Metrics periodically from Targets and stores them into TSDB with timestamps and provides Visualisation, Alerting & Querying
 - **Metrics**: A measurement of something (with respect to time here) - Ex: process_cpu_seconds_total, etc.
 - **Target**: Metric will be of something - Where is the metric being taken from? - Ex: My laptop, a Game Server, an App, etc. 
 - **Scraping Interval**: How relentlessly/persistently the metrics are being scraped/collected - Ex: 2s, 8h, 6d, 11w, 1y, etc.
 - **Database**: Time Series Database stores data with timestamps - Ex: Values of a metric will be collected at different timestamps
 
-We can also consider an [Odometer](https://media.istockphoto.com/id/1398823521/vector/electric-counter-electric-meter-with-numbers-display-of-odometer-counter-of-kilowatt-energy.jpg?s=1024x1024&w=is&k=20&c=SEBWLgQxMS9M-ndi9AM6Am5_KyKLasJMAM9kRftDEL0=), Fitness Tracker and PEMS' Superset as a day-to-day real life example of a Monitoring tool for a better understanding of Prometheus:
+We can also consider an [Odometer](https://media.istockphoto.com/id/1398823521/vector/electric-counter-electric-meter-with-numbers-display-of-odometer-counter-of-kilowatt-energy.jpg?s=1024x1024&w=is&k=20&c=SEBWLgQxMS9M-ndi9AM6Am5_KyKLasJMAM9kRftDEL0=) and PEMS' Superset as a day-to-day real life example of a Monitoring tool for a better understanding of Prometheus:
 > When a car moves forward, the distance covered is constantly recorded and visualised through the Odometer 
 > PEMS' Superset visualises (Not records!) Tickets' from Redmine at every 24 hour interval using the tickets 
 
 The Prometheus related components can be interpreted as follows in this example:
+
 <div align=center>
 
 | Term | Prometheus |  Odometer | Superset |	
@@ -35,7 +39,7 @@ The Prometheus related components can be interpreted as follows in this example:
 | TSDB        | Is a [Time Series Database](https://www.reddit.com/r/Database/comments/1ayaj1b/time_series_database/) | Not a time-series database as timestamps are not recorded | Not adding data *to* but pulling *from* a database for visualisation |
 </div>
 
-In the following section, we will be better understanding these terms within the context of Prometheus.
+In the following section, we will be better understanding the basics of how everything works within Prometheus.
 
 ## Architecture of Prometheus
 
