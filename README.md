@@ -40,6 +40,7 @@ In the following section, we will be better understanding the basics of how ever
 
 ## Architecture of Prometheus
 
+![img](https://i.imgur.com/VvNlrv7.gif)
 
 Types of Metrics
 
