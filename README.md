@@ -84,9 +84,9 @@ Prometheus will send HTTP request / Scrape Request to the target endpoint at a d
 ### 3. Storage, Querying and Alerting For Metrics
 **Storage**
 - The pulled/scraped metrics are pushed to Prometheus' TSDB, which is located on the same local disk as the Prometheus Server
-- This DB can process millions of samples per second which makes the Prometheus Server good at fetching metrics of 1000s of machines
+- This DB can process millions of samples per second which makes the Prometheus Server good at fetching metrics of 1000s of machines            
 **Querying**
-- PromQL can be used for instant querying that can generate output in the form of graphs and tables
+- PromQL can be used for instant querying that can generate output in the form of graphs and tables     
 **Alerting**
 - Prometheus uses Alert Manager for sending alerts to which are then converted into Notifications for Email, Telegram, etc.
 
