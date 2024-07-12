@@ -13,6 +13,7 @@ __________________________________________
   - [Understanding Metrics](#understanding-metrics)
   - [Understanding Exporters](#understanding-exporters)
 - [Querying & PromQL](#querying--promql)
+- [Practical: Prometheus](#practical--promql)
 - [Resources](#resources)
 
 ## Monitoring & Prometheus         
@@ -62,9 +63,8 @@ This architecture involves the following sequence for collecting metrics to reco
 > Target Sources are first learnt of using Service Discovery and then their metrics are scraped by hitting their endpoints. The scraped data is stored and then made available for querying, visualisation and alerts.  
 
 A slightly more detailed explanation of the above sequence is as follows:
-1. Service Discovery (Discovering Target Sources)
-- This comes before the scraping process as the endpoints of the target source whose metrics are to be scraped have to be first learnt of. 
-- The targets are defined within the `Prometheus.yml` configuration file in the following manner:
+### 1. Service Discovery (Discovering Target Sources)
+This comes before the scraping process as the endpoints of the target source whose metrics are to be scraped have to be first learnt of. The targets are defined within the `Prometheus.yml` configuration file in the following manner:
 ```
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
@@ -74,26 +74,25 @@ scrape_configs:
     # metrics_path defaults to '/metrics'
 ```
 
-2. Scraping Metrics From Exporters or Client Library
-- The metrics to be selected for applications, servers or machines are first defined and then made available at an endpoint that ends with `/metrics` 
-- The metric endpoints can be Instrumented or defined within the source-code of an application with Client Libraries so that when it is run, its metrics would be available on an endpoint
-- Otherwise, exporters can be used for an existing target for putting the metrics at an endpoint: 
-    - The source code of Linux need not be Instrumented since Exporters can generate metrics
-    - Exporters will convert the metrics into a text-format that is understood by Prometheus
-- Prometheus will send HTTP request / Scrape Request to the target endpoint at a defined Scrape Interval, pull the metrics and store them in the TSDB
+### 2. Scraping Metrics From Exporters or Client Library
+The metrics to be selected for applications, servers or machines are first defined and then made available at an endpoint that ends with `/metrics`. The metric endpoints can be Instrumented or defined within the source-code of an application with Client Libraries so that when it is run, its metrics would be available on an endpoint.
 
-3. Storage, Querying and Alerting For Metrics
-- Storage
-    - The pulled/scraped metrics are pushed to Prometheus' TSDB, which is located on the same local disk as the Prometheus Server
-    - This DB can process millions of samples per second which makes the Prometheus Server good at fetching metrics of 1000s of machines
-- Querying
-    - PromQL can be used for instant querying that can generate output in the form of graphs and tables
-- Alerting
-    - Prometheus uses Alert Manager for sending alerts to which are then converted into Notifications for Email, Telegram, etc.
+Otherwise, exporters can be used for an existing target for putting the metrics at an endpoint: The source code of Linux need not be Instrumented since Exporters can generate metrics and Exporters will convert the metrics into a text-format that is understood by Prometheus.
+
+Prometheus will send HTTP request / Scrape Request to the target endpoint at a defined Scrape Interval, pull the metrics and store them in the TSDB.
+
+### 3. Storage, Querying and Alerting For Metrics
+**Storage**
+- The pulled/scraped metrics are pushed to Prometheus' TSDB, which is located on the same local disk as the Prometheus Server
+- This DB can process millions of samples per second which makes the Prometheus Server good at fetching metrics of 1000s of machines
+**Querying**
+- PromQL can be used for instant querying that can generate output in the form of graphs and tables
+**Alerting**
+- Prometheus uses Alert Manager for sending alerts to which are then converted into Notifications for Email, Telegram, etc.
 
 ------------------------------------
 
-Types of Metrics
+## Types of Metrics
 
 **1. Counter**
    - A metrics type where the value only gets incremented or reset and the
