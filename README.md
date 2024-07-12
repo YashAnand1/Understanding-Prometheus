@@ -24,8 +24,7 @@ We can also consider an [Odometer](https://media.istockphoto.com/id/1398823521/v
 > When a car moves forward, the distance covered is constantly recorded and visualised through the Odometer 
 > PEMS' Superset visualises (Not records!) Tickets' from Redmine at every 24 hour interval using the tickets 
 
-The Prometheus related components can be interpreted as follows in this example:
-
+The following similarities can be seen in the examples provided above:
 <div align=center>
 
 | Term | Prometheus |  Odometer | Superset |	
