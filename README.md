@@ -8,9 +8,6 @@ __________________________________________
 </div>
 
 ## Monitoring & Prometheus         
-
-##### Still considering if such analogies should be utilised or not
-
 Monitoring is a way of actively observing & analysing something to keep track of progress and to ensure it is working as expected. A use-case for Monitoring Tools include prevention over cure - As something that is about to go wrong in an application, server or a machine, can be prevented through such tools like Prometheus or at least fixed by referring to the information gathered during monitoring. 
 
 Prometheus is a similar Monitoring tool that also allows Visualisation, Alerting and Querying. Prometheus can monitor various **Metrics** of various **targets** by **scraping** them at a specified **interval** of time into a **Time-Series Database with timestamps**. As an example, we can monitor and visualise the available FileSystem space using the [`node_filesystem_avail_bytes` Metric](https://prometheus.io/docs/guides/node-exporter/#exploring-node-exporter-metrics-through-the-prometheus-expression-browser) of my laptop or target by recording data at every hour (Scraping Interval) and storing it in its Time-Series Database with timestamps. 
