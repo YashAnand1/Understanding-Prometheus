@@ -7,6 +7,14 @@ __________________________________________
 # Understanding Prometheus: An Introduction
 </div>
 
+## Table of Contents
+- [Monitoring & Prometheus](#monitoring--prometheus)
+- [Architecture of Prometheus](#architecture-of-prometheus)
+  - [Understanding Metrics](#understanding-metrics)
+  - [Understanding Exporters](#understanding-exporters)
+- [Querying & PromQL](#querying--promql)
+- [Resources](#resources)
+
 ## Monitoring & Prometheus         
 
 Monitoring is a way of actively observing & analysing something for keeping track of and ensuring the expected progress. With Monitoring Tools, we can prioritise prevention over cure - As something that is about to go wrong in an application, server or a machine, can be prevented through tools like Prometheus or at least fixed by referring to the information gathered by them during monitoring. 
@@ -37,15 +45,36 @@ The following similarities can be seen in the examples provided above:
 </div>
 
 In the following section, we will be better understanding the basics of how everything works within Prometheus.
+-------------------------------------------
 
 ## Architecture of Prometheus
 
-![img](https://i.imgur.com/oBXCMLv.png)
 <div align=center>
+![img](https://i.imgur.com/oBXCMLv.png)
 
 [Image Source](https://medium.com/@extio/unveiling-the-architectural-brilliance-of-prometheus-af07cca14896)
 </div>
 
+1. Service Discovery
+This comes before the scraping process as the endpoints of the target source whose metrics are are first learnt about. 
+
+The targets are defined within the `Prometheus.yml` configuration file in the following manner:
+```
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"] 
+    # metrics_path defaults to '/metrics'
+```
+
+2. Scraping Metrics From Exporters or Client Library
+
+
+
+3. 
+
+------------------------------------
 
 Types of Metrics
 
