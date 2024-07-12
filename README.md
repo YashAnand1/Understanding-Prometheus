@@ -50,9 +50,11 @@ In the following section, we will be better understanding the basics of how ever
 ## Architecture of Prometheus
 
 <div align=center>
+
 ![img](https://i.imgur.com/oBXCMLv.png)
 
 [Image Source](https://medium.com/@extio/unveiling-the-architectural-brilliance-of-prometheus-af07cca14896)
+
 </div>
 
 1. Service Discovery
