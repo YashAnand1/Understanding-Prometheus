@@ -37,11 +37,11 @@ The following similarities can be seen in the examples provided above:
 
 | Term | Prometheus |  Odometer | Superset |	
 |------|----------|---------|------------|	
-| Monitoring Tool | Prometheus  | Fitness Tracker | Superset |
+| Monitoring Tool | Prometheus  | Odometer | Superset |
 | Target          | Laptop  | Car | Redmine |
 | Metrics         | node_filesystem_avail_bytes | Distance Travelled  | Tickets |
 | Scraping Interval| 1h  | No Intervals | 24h |
-| TSDB        | Is a [Time Series Database](https://www.reddit.com/r/Database/comments/1ayaj1b/time_series_database/) | Not a time-series database as timestamps are not recorded | Not adding data *to* but pulling *from* a database for visualisation. Note: Superset is a visualisation tool, not a Monitoring tool |
+| TSDB        | Is a [Time Series Database](https://www.reddit.com/r/Database/comments/1ayaj1b/time_series_database/) - Metrics stored with timestamps | Not a time-series database as timestamps are not recorded | Not adding data *to* but pulling *from* a database for visualisation |
 </div>
 
 In the following section, we will be better understanding the basics of how everything works within Prometheus.
