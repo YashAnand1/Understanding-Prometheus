@@ -16,7 +16,7 @@ Prometheus is a similar Monitoring tool that also allows Visualisation, Alerting
 Prometheus and its components can be understood in the following manner:
 - **Prometheus**: A Monitoring Tool that scrapes Metrics periodically from Targets and stores them into TSDB with timestamps and provides Visualisation, Alerting & Querying
 - **Metrics**: A measurement of something (with respect to time here) - Ex: process_cpu_seconds_total, etc.
-- **Target**: Metric will be of something - Where is the metric being taken from? - Ex: My laptop, a Game Server, an App, etc. 
+- **Target**: Metric will be of a source - Where is the metric being taken from? - Ex: My laptop, a Game Server, an App, etc. 
 - **Scraping Interval**: How relentlessly/persistently the metrics are being scraped/collected - Ex: 2s, 8h, 6d, 11w, 1y, etc.
 - **Database**: Time Series Database stores data with timestamps - Ex: Values of a metric will be collected at different timestamps
 
@@ -40,7 +40,12 @@ In the following section, we will be better understanding the basics of how ever
 
 ## Architecture of Prometheus
 
-![img](https://i.imgur.com/VvNlrv7.gif)
+![img](https://i.imgur.com/oBXCMLv.png)
+<div align=center>
+
+[Image Source](https://medium.com/@extio/unveiling-the-architectural-brilliance-of-prometheus-af07cca14896)
+</div>
+
 
 Types of Metrics
 
