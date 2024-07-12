@@ -1,6 +1,6 @@
 <div align=center>
 NOTE: This document is heavily work-in-progress and its content and formatting are liable to major changes everyday, until its completion.  
-   
+
 __________________________________________
 
 ![img](https://i.imgur.com/GzEatYl.png)
@@ -11,31 +11,37 @@ __________________________________________
 
 ##### Still considering if such analogies should be utilised or not
 
-Monitoring is a way to actively analyse something to reduce the negative and to possibly increase the positive impacts. Taking an example of schools, Class Monitors may perform monitoring by actively recording the behaviour and performance of students into a Notebook at any given time of the day, on various criterias like Attendance, Attentiveness, etc.
+Monitoring is a way of actively observing & analysing something to keep track of progress and to ensure it is working as expected. A use-case for Monitoring Tools include prevention over cure - As something that is about to go wrong in an application, server or a machine, can be prevented through such tools like Prometheus or at least fixed by referring to the information gathered during monitoring. 
 
-Prometheus is also a similar Monitoring tool that allows Graphing, Alerting and Querying. Like the Classroom example, Prometheus (C.M.) will monitor different **targets** (Students) and record their behaviour and performance into a **Time-Series Database with timestamps** (Notebook with timestamps) at an **Interval** of time for various **Metrics** (criteras). 
+Prometheus is a similar Monitoring tool that also allows Visualisation, Alerting and Querying. Prometheus can monitor various **Metrics** of various **targets** by **scraping** them at a specified **interval** of time into a **Time-Series Database with timestamps**. As an example, we can monitor and visualise the available FileSystem space using the [`node_filesystem_avail_bytes` Metric](https://prometheus.io/docs/guides/node-exporter/#exploring-node-exporter-metrics-through-the-prometheus-expression-browser) of my laptop or target by recording data at every hour (Scraping Interval) and storing it in its Time-Series Database with timestamps. 
 
-To better understand Monitoring Tools, Targets, Metrics and (Scraping) Interval, consider the following 2 examples of monitoring:
-Real-life Monitoring
-> **shepherd** counting and writing down the **number** of **sheeps** every **8 hours** into a **notebook with timestamps**      
-> **Superset** recording **Redmine Tickets**' daily **attendance** using the **tickets**
+Prometheus and its components can be understood in the following manner:
+- **Prometheus**: A Monitoring Tool that scrapes Metrics periodically from Targets and stores them into TSDB with timestamps
+- **Metrics**: A measurement of something (with respect to time here) - Ex: process_cpu_seconds_total, etc.
+- **Target**: Metric will be of something - Where is the metric being taken from? - Ex: My laptop, a Game Server, an App, etc. 
+- **Scraping Interval**: How relentlessly/persistently the metrics are being scraped/collected - Ex: 2s, 8h, 6d, 11w, 1y, etc.
+- **Database**: Time Series Database stores data with timestamps - Ex: Values of a metric will be collected at different timestamps
 
-Here, the following **rough** comparisons can be made between these examples and Prometheus:
+We can also consider an [Odometer](https://media.istockphoto.com/id/1398823521/vector/electric-counter-electric-meter-with-numbers-display-of-odometer-counter-of-kilowatt-energy.jpg?s=1024x1024&w=is&k=20&c=SEBWLgQxMS9M-ndi9AM6Am5_KyKLasJMAM9kRftDEL0=), Fitness Tracker and PEMS' Superset as a day-to-day real life example of a Monitoring tool for a better understanding of Prometheus:
+> When a car moves forward, the distance covered is constantly recorded and visualised through the Odometer 
+> PEMS' Superset visualises (Not records!) Tickets' from Redmine at every 24 hour interval using the tickets 
 
+The Prometheus related components can be interpreted as follows in this example:
 <div align=center>
 
-| Term | Prometheus | Shepherd | Superset |	
-|------|----------|----------|------------|	
-| Monitoring Tool | Prometheus | Shepherd | Superset |
-| Target          | Apps, Hardware, Linux Server, Apache Server, etc. being monitored | Sheeps | Redmine |
-| Metrics         | node_cpu_seconds_total, node_filesystem_avail_bytes, node_network_receive_bytes_total, etc. | Number of sheeps  | Tickets |
-| Scraping Interval| More on this later - Basically the interval at which data is written down  | 24h (Daily) | 8h (Daily) |
-| Database        | [TimeSeries DB](https://www.reddit.com/r/Database/comments/1ayaj1b/time_series_database/) | Notebook With Timestamps | N/A - Not actually adding the metrics to a DB |
+| Term | Prometheus |  Odometer | Superset |	
+|------|----------|----|------|------------|	
+| Monitoring Tool | Prometheus  | Fitness Tracker | Superset |
+| Target          | Laptop  | Car | Redmine |
+| Metrics         | node_filesystem_avail_bytes | Distance Travelled  | Tickets |
+| Scraping Interval| 1h  | No Intervals | 24h |
+| TSDB        | Is a [Time Series Database](https://www.reddit.com/r/Database/comments/1ayaj1b/time_series_database/) | Not a time-series database as timestamps are not recorded | Not adding data *to* but pulling *from* a database for visualisation |
 </div>
 
 In the following section, we will be better understanding these terms within the context of Prometheus.
 
 ## Architecture of Prometheus
+
 
 Types of Metrics
 
