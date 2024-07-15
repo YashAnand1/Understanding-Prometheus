@@ -22,12 +22,12 @@ We can also consider an [Odometer](https://media.istockphoto.com/id/1398823521/v
 > When a car moves forward, the distance covered is constantly recorded and visualised through the Odometer 
 > PEMS' Superset visualises (Not records!) Tickets' from Redmine at every 24 hour interval using the tickets 
 
-
+The following similarities can be seen in the examples provided above:
 <div align=center>
 
-| Monitoring Tool | Prometheus |  Odometer | Superset |	
-|        |----------|---------|------------|	
-| ----- | Prometheus  | Odometer | Superset |
+| Term | Prometheus |  Odometer | Superset |	
+|------|----------|---------|------------|	
+| Monitoring Tool | Prometheus  | Odometer | Superset |
 | Target          | Laptop  | Car | Redmine |
 | Metrics         | node_filesystem_avail_bytes | Distance Travelled  | Tickets |
 | Scraping Interval| 1h  | No Intervals | 24h |
@@ -84,9 +84,7 @@ Prometheus will send HTTP request / Scrape Request to the target endpoint at a d
 ## Types of Metrics
 
 **1. Counter**
-   - A metrics type where the value only gets incremented or reset and the
-   [only type that works with RATE](https://stackoverflow.com/questions/66674880/understanding-of-rate-func=tion-of-promql)
-      -  Still unclear on WHY rate() only works with Counter
+   - A metrics type where the value only gets incremented or reset
    - **Example**: Height as it only increments or the number of requests made
    to a server
    - **Use Cases**:
@@ -95,18 +93,47 @@ Prometheus will send HTTP request / Scrape Request to the target endpoint at a d
       time
       - When cumulative data is required
 
+Used for measurements that only increase or get reset. Cumulative so actual value is not very useful but it helps find the rate of change by differentiating between 2 timestamps. 
+
+Counters usually end with `_total` suffix and is mostly useful when used with the `rate()` function to find the how much or fast a change happened. In the following example, we understand how many average requests per second were received:
+```
+rate(prometheus_http_requests_total{handler="/api/v1/query"}[1m])
+```
+
+Similarly, the `increase()` function can also be used to find the overall difference:
+```
+increase(prometheus_http_requests_total[1m])
+```
+
+An example of such a metric is:
+```
+# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
+# TYPE process_cpu_seconds_total counter
+process_cpu_seconds_total 984.44
+```
+
 **2. Gauge**
+   - Snapshot of current state
    - A metric type used for values that can increase or decrease over time
-   - **Example**: Weight as it can increase & decrease or the Memory usage
+   - **Example**: Weight, temperature, cpu, ram, storage, etc. as they can increase & decrease
    - **Use Cases**:
       - When a value that can increase or decrease or fluctuate over time
       is to be recorded
       - When the recording of rate is not required - Further research
       required
 
+Example of such a metric is as follows:
+```
+# HELP process_open_fds Number of open file descriptors.
+# TYPE process_open_fds gauge
+process_open_fds 29
+```
+
 **3. Histogram**
    - A metric type that records frequency of events over a time range or
    buckets (predefined ranges to group metrics)
+   - Accurate aggregation 
+   - More consuming in storage - every sample is not just a single number but a few samples (one per bucket).
    - **Example**: Tracking time taken to start PC daily after shutdown or
    tracking http request duration - In former, bucket could be **known**
    range of weight time like 0-5 Min, 5-10 Min, etc.
@@ -117,17 +144,76 @@ Prometheus will send HTTP request / Scrape Request to the target endpoint at a d
       - When cumulative data and previous values being added with current
       one is not an issue
 
+Distribution of measurements used to represent duration or size. The entire range is divided into Intervals/Buckets and count how many measurements fall into each bucket.
+
+The components of a histogram metric are usually as follows:
+- Counter with total number of measurements - "_count" suffix
+- Counter with sum of values of measurements - "_sum" suffix
+- Histogram buckets have "_bucket" suffix with `le label` (less than or equal to label) to denote upper bound of range
+
+Buckets or Ranges in buckets are Upper Inclusive Bound, meaning the higest point in the range will also be included as a time-frame 
+
+Example of such a metric is as follows:
+```
+# HELP prometheus_tsdb_compaction_chunk_range_seconds Final time range of chunks on their first compaction
+# TYPE prometheus_tsdb_compaction_chunk_range_seconds histogram
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="100"} 0
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="400"} 0
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="1600"} 0
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="6400"} 0
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="25600"} 690
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="102400"} 1071
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="409600"} 186720
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="1.6384e+06"} 186720
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="6.5536e+06"} 187760
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="2.62144e+07"} 187760
+prometheus_tsdb_compaction_chunk_range_seconds_bucket{le="+Inf"} 187760
+prometheus_tsdb_compaction_chunk_range_seconds_sum 2.4053577485e+10
+prometheus_tsdb_compaction_chunk_range_seconds_count 187760
+```
+
+Rate can be found from the sum and count from the above example:
+```
+sum(rate(prometheus_tsdb_compaction_chunk_range_seconds_sum[5m])) / sum(rate(prometheus_tsdb_compaction_chunk_range_seconds_count[5m]))      
+```
+
+#### Histogram_Quantile
+Quantile is Percentile but instead of a 0 to 100 scale, it uses a 0 to 1 scale. This way, the 99th percentile or the 0.99th quantile can be found for a metric by:
+```
+histogram_quantile(0.99, rate(prometheus_tsdb_compaction_chunk_range_seconds_bucket[5m]))
+```
+
+The aggregation of histograms is also possible in Prometheus by writing queries like:
+```
+histogram_quantile(0.99, sum by (le) (rate(prometheus_tsdb_compaction_chunk_range_seconds_bucket[5m])))
+```
+
 **4. Summary**
-   - Further understanding of Quantiles is required to better understand
-   this Metrics-type.
+   - Similar to Histograms, Summaries also help with measuring - In this sense they are an alternative to Histogram without needing to configure its buckets
+   - Lower storage cost & best for monitoring accurate value latency (duration)
+   - Cannot aggregate and came before Histogram Prometheus in
+   - This metrics consists of 2 counter with `count` and `sum` suffix
    - **Use Cases**:
       - When measurement of many values is to be taken for calculating
       average
-      - When approximation is not an issue
+      - When approximation is not required and accuracy is needed
       - When range of values is not known before like histograms
 
+An example of a summary metric is as follows:
+```
+# HELP prometheus_rule_group_duration_seconds The duration of rule group evaluations.
+# TYPE prometheus_rule_group_duration_seconds summary
+prometheus_rule_group_duration_seconds{quantile="0.01"} NaN
+prometheus_rule_group_duration_seconds{quantile="0.05"} NaN
+prometheus_rule_group_duration_seconds{quantile="0.5"} NaN
+prometheus_rule_group_duration_seconds{quantile="0.9"} NaN
+prometheus_rule_group_duration_seconds{quantile="0.99"} NaN
+prometheus_rule_group_duration_seconds_sum 0
+prometheus_rule_group_duration_seconds_count 0
+```
+
 ## Understanding PromQL   
-Millions of metrics will be stored in TSDB - How to aggregate metrics to understand how app is performing or answer questions like how much traffic is coming to app?    
+Millions of metrics will be stored in TSDB - How to aggregate metrics to understand how app is performing or answer questions like how much traffic is coming to app? Why can't we use SQL-like languages as well? SQL languages tend to lack expressive power when it comes to the sort of calculations you would like to perform on time series.
 
 ### Use cases of PromQL:
     - Fetching metrics
@@ -165,7 +251,7 @@ Additional querying using PromQL:
  prometheus_http_requests_total[5m]    
  ```
 
-**Data-Types**
+**Value Data-Types**
  In Prometheus there are 3 primary datatypes used to represent metrics and their values
  
  | Type | Query | Result | Explanation	|	
@@ -174,7 +260,7 @@ Additional querying using PromQL:
 | Instant Vector | http_server_requests_seconds_count | 20@1720606263 | Commonly used in promql queries to fetch current values or instant calc | 
 | Range Vector | http_server_requests_seconds_count[1s] | 21@1720606263 22@1720606264 23@172060625 | List of values - range of samples until current time - Helps calculate rates of change, calculating, performing aggregations |
 
-**Functions**
+**Some Common Functions**
 Some [important functions](https://prometheus.io/docs/prometheus/latest/querying/functions/) that can be used while querying include:
 
 sum()
@@ -230,3 +316,8 @@ Within the context of Gauge Metric-Type, the following is the output of trying t
 https://dev.to/sre_panchanan/decoding-promql-a-deep-dive-into-prometheus-query-language-4h23#scalar
 https://promlabs.com/blog/2020/06/18/the-anatomy-of-a-promql-query/
 Prometheus instant vector vs range vector - https://stackoverflow.com/questions/68223824/prometheus-instant-vector-vs-range-vector
+
+can count also be used like sum_over_time was used on gauge
+does promql have a cli utility?
+
+(
