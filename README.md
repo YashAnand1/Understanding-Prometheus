@@ -5,15 +5,6 @@ __________________________________________
 # Understanding Prometheus: An Introduction
 </div>
 
-## Table of Contents
-- [Monitoring & Prometheus](#monitoring--prometheus)
-- [Architecture of Prometheus](#architecture-of-prometheus)
-  - [Understanding Metrics](#understanding-metrics)
-  - [Understanding Exporters](#understanding-exporters)
-- [Querying & PromQL](#querying--promql)
-- [Practical: Prometheus](#practical--promql)
-- [Resources](#resources)
-
 ## Monitoring & Prometheus         
 
 Monitoring is a way of actively observing & analysing something for keeping track of and ensuring the expected progress. With Monitoring Tools, we can prioritise prevention over cure - As something that is about to go wrong in an application, server or a machine, can be prevented through tools like Prometheus or at least fixed by referring to the information gathered by them during monitoring. 
