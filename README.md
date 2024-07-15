@@ -310,14 +310,3 @@ increase(prometheus_http_requests_total[1m])
 (30-10) = 20 
 (Difference b/w Highest & Lowest value within 1 min) 
 ```
-
-Within the context of Gauge Metric-Type, the following is the output of trying to find the values of a Metric sum
-
-https://dev.to/sre_panchanan/decoding-promql-a-deep-dive-into-prometheus-query-language-4h23#scalar
-https://promlabs.com/blog/2020/06/18/the-anatomy-of-a-promql-query/
-Prometheus instant vector vs range vector - https://stackoverflow.com/questions/68223824/prometheus-instant-vector-vs-range-vector
-
-can count also be used like sum_over_time was used on gauge
-does promql have a cli utility?
-
-(
