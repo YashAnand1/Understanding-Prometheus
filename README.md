@@ -1,6 +1,4 @@
 <div align=center>
-NOTE: This document is currently a work-in-progress and its content and formatting are liable to major changes everyday, until its completion.  
-
 __________________________________________
 
 ![img](https://i.imgur.com/GzEatYl.png)
