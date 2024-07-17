@@ -5,6 +5,15 @@ __________________________________________
 # Understanding Prometheus: An Introduction
 </div>
 
+## Table of Contents
+- [Understanding Monitoring & Prometheus](#understanding-monitoring--prometheus)
+- [Architecture of Prometheus](#architecture-of-prometheus)
+  - [Directory Information Tree (DIT)](#directory-information-tree-dit)
+  - [Suffix & Distinguished Name (dn)](#suffix--distinguished-name-dn)
+- [Searching Using LDAPSearch](#searching-using-ldapsearch)
+- [Prometheus Installation](#prometheus-installation)
+- [Resources](#resources)
+
 ## Monitoring & Prometheus         
 
 Monitoring is a way of actively observing & analysing something for keeping track of and ensuring the expected progress. With Monitoring Tools, we can prioritise prevention over cure - As something that is about to go wrong in an application, server or a machine, can be prevented through tools like Prometheus or at least fixed by referring to the information gathered by them during monitoring. 
@@ -18,9 +27,8 @@ Prometheus and its components can be understood in the following manner:
 - **Scraping Interval**: How relentlessly/persistently the metrics are being scraped/collected - Ex: 2s, 8h, 6d, 11w, 1y, etc.
 - **Database**: Time Series Database stores data with timestamps - Ex: Values of a metric will be collected at different timestamps
 
-We can also consider an [Odometer](https://media.istockphoto.com/id/1398823521/vector/electric-counter-electric-meter-with-numbers-display-of-odometer-counter-of-kilowatt-energy.jpg?s=1024x1024&w=is&k=20&c=SEBWLgQxMS9M-ndi9AM6Am5_KyKLasJMAM9kRftDEL0=) and PEMS' Superset as a day-to-day real life example of a Monitoring tool for a better understanding of Prometheus:
-> When a car moves forward, the distance covered is constantly recorded and visualised through the Odometer 
-> PEMS' Superset visualises (Not records!) Tickets' from Redmine at every 24 hour interval using the tickets 
+We can also consider the following analogy for gaining a better understanding of Prometheus:
+> Doctor creates a chart to measure how many times patient drinks water along and creates a table with timestamps
 
 The following similarities can be seen in the examples provided above:
 <div align=center>
@@ -45,7 +53,6 @@ In the following section, we will be better understanding the basics of how ever
 ![img](https://i.imgur.com/oBXCMLv.png)
 
 [Image Source](https://medium.com/@extio/unveiling-the-architectural-brilliance-of-prometheus-af07cca14896)
-
 </div>
 
 This architecture involves the following sequence for collecting metrics to recording them into the TSDB for querying and visualisation:
@@ -60,8 +67,8 @@ scrape_configs:
   - job_name: "prometheus"
     static_configs:
       - targets: ["localhost:9090"] 
-    # metrics_path defaults to '/metrics'
 ```
+metrics
 
 ### 2. Scraping Metrics From Exporters or Client Library
 The metrics to be selected for applications, servers or machines are first defined and then made available at an endpoint that ends with `/metrics`. The metric endpoints can be Instrumented or defined within the source-code of an application with Client Libraries so that when it is run, its metrics would be available on an endpoint.
@@ -212,33 +219,42 @@ prometheus_rule_group_duration_seconds_sum 0
 prometheus_rule_group_duration_seconds_count 0
 ```
 
-## Understanding PromQL   
+## Querying With PromQL   
 Millions of metrics will be stored in TSDB - How to aggregate metrics to understand how app is performing or answer questions like how much traffic is coming to app? Why can't we use SQL-like languages as well? SQL languages tend to lack expressive power when it comes to the sort of calculations you would like to perform on time series.
 
-### Use cases of PromQL:
+Use cases of PromQL:
     - Fetching metrics
     - Aggregating metrics
     - Building dashboards
     - Setup alerts
-    
-### Comparison with SQL:
+
+### Basics
+**Value Data-Types**
+ In Prometheus there are 3 primary datatypes used to represent metrics and their values
+
+ | Type | Query | Result | Explanation	|	
+|--|---|---------------------|-----------------|			
+| Scalar | sum(http_server_requests_seconds_count) | 20 | Simple numeric floating point values - 20 is not associated with any timestamp as its an aggragated value |
+| Instant Vector | http_server_requests_seconds_count | 20@1720606263 | Commonly used in promql queries to fetch current values or instant calc | 
+| Range Vector | http_server_requests_seconds_count[1s] | 21@1720606263 22@1720606264 23@172060625 | List of values - range of samples until current time - Helps calculate rates of change, calculating, performing aggregations |
+
+### Examples:
 
 [Operators In Prometheus](https://prometheus.io/docs/prometheus/latest/querying/operators/)
 
-| Criterion | SQL | PromQL |	Explanation	|	
+| Criterion | PromQL |	Explanation	|	
 |--|---|---------------------|-----------------|			
-| Viewing a metric | SELECT * FROM prometheus_http_requests_total | prometheus_http_requests_total | In PromQL, its enough to write the metrics |	
-| Filtering a metric | SELECT * FROM prometheus_http_requests_total WHERE handler="/api/v1/metadata" | prometheus_http_requests_total{handler="/api/v1/metadata"} | Use {} to provide the label/key-value & operator like = or !=  | 
-| Multiple-Filtering (AND) | SELECT * FROM prometheus_http_requests_total WHERE handler="/api/v1/metadata" AND job="prometheus" | prometheus_http_requests_total{handler="/api/v1/metadata", job="prometheus"} | Separate the label-values to be filtered with a comma |
-| Multiple-Filtering (OR+Like) | SELECT * FROM prometheus_http_requests_total WHERE handler LIKE "/api/v1/%" handler LIKE OR handler LIKE "/api/v2/%" | prometheus_http_requests_total{handler=~"/api/v2...|api/v1..."} | No result shown - ISSUE |
-| Multiple-Filtering (OR) | SELECT * FROM prometheus_http_requests_total WHERE handler="/api/v1/metadata" | prometheus_http_requests_total{handler!~"/api/v1.."} | Incorrect result shown - Equal value still being shown |
+| Viewing a metric |prometheus_http_requests_total | In PromQL, its enough to write the metrics |	
+| Filtering a metric | prometheus_http_requests_total{handler="/api/v1/metadata"} | Use {} to provide the label/key-value & operator like = or !=  | 
+| Multiple-Filtering (AND) | prometheus_http_requests_total{handler="/api/v1/metadata", job="prometheus"} | Separate the label-values to be filtered with a comma |
+| Multiple-Filtering (OR+Like) | prometheus_http_requests_total{handler=~"/api/v1/metadata|/metrics"} | No result shown - ISSUE |
+| Multiple-Filtering (OR) | prometheus_http_requests_total{handler!~"/api/v1.+"} | Incorrect result shown - Equal value still being shown |
 
 Additional querying using PromQL:
     - Finding metrics at a specifc unix time:
  ```
  prometheus_http_requests_total@1720606263
  ```
-
    - Finding metrics x d/s/m/h/etc ago **From Current Time**
  ```
  # If current time = 12:00 PM, value given will be AT 11:55 AM
@@ -251,21 +267,11 @@ Additional querying using PromQL:
  prometheus_http_requests_total[5m]    
  ```
 
-**Value Data-Types**
- In Prometheus there are 3 primary datatypes used to represent metrics and their values
- 
- | Type | Query | Result | Explanation	|	
-|--|---|---------------------|-----------------|			
-| Scalar | sum(http_server_requests_seconds_count) | 20 | Simple numeric floating point values - 20 is not associated with any timestamp as its an aggragated value |
-| Instant Vector | http_server_requests_seconds_count | 20@1720606263 | Commonly used in promql queries to fetch current values or instant calc | 
-| Range Vector | http_server_requests_seconds_count[1s] | 21@1720606263 22@1720606264 23@172060625 | List of values - range of samples until current time - Helps calculate rates of change, calculating, performing aggregations |
-
 **Some Common Functions**
 Some [important functions](https://prometheus.io/docs/prometheus/latest/querying/functions/) that can be used while querying include:
 
 sum()
-When we run `prometheus_http_requests_total@1720606263, we get all metric-values 
-at a particular time frame. What if we wish to aggregate them?
+When we run `prometheus_http_requests_total@1720606263, we get all metric-values at a particular time frame. What if we wish to aggregate them?
 ```
 sum(prometheus_http_requests_total@1720606263)
 
@@ -282,11 +288,11 @@ sum(prometheus_http_requests_total@1720606263)
 
 **read()**
 - Helpful to know how fast or slow the values of metrics are changing
-- Below is our Counter-Metrics, where values are cumulative and only increase : 
+- Below is our Counter-Metrics, where values are cumulative and only increase:
 ```
 rate(prometheus_http_requests_total[1m])
 
-(30-10)/(1*60) = 0.33 
+(30-10)/(1*60) = 0.33
 (Difference b/w Highest & Lowest value within 1 min) / (60 seconds)
 ```
 
@@ -310,3 +316,56 @@ increase(prometheus_http_requests_total[1m])
 (30-10) = 20 
 (Difference b/w Highest & Lowest value within 1 min) 
 ```
+
+Based on our communication in the morning, today I worked towards exploring the following PromQL-related functions for being able to fetch event aggregations:
+max_over_range
+min_over_range
+increase()
+delta()
+
+Out of these, an arithmetic operation involving the `max_over_range` and `min_over_range` was utilised to fetch the difference within a time-range, in the following manner:
+
+`max_over_time(prometheus_http_requests_total{handler="/metrics"}[1s] @1720681325) - min_over_time(prometheus_http_requests_total{handler="/metrics"}[1s] @1720681320)`
+{code="200", handler="/metrics", instance="localhost:9090", job="prometheus"}                                                       5
+
+## Setup
+To begin using Prometheus for monitoring your systems, follow these steps for installation and setup:
+
+1.Download Prometheus:
+
+Visit the Prometheus download page (https://prometheus.io/download/) and choose the appropriate version for your operating system. For example, to download Prometheus for Linux, you can use the following command:
+
+wget https://github.com/prometheus/prometheus/releases/download/v2.30.0/prometheus-2.30.0.linux-amd64.tar.gz
+
+2.Extract the Tarball:
+
+Once the download is complete, extract the tarball using the following command:
+
+tar -xzf prometheus-2.30.0.linux-amd64.tar.gz
+
+3.Navigate to the Prometheus Directory:
+
+Enter the Prometheus directory that was extracted from the tarball:
+
+cd prometheus-2.30.0.linux-amd64
+
+4.Configure Prometheus:
+
+Create a configuration file named prometheus.yml to define your Prometheus configuration. You can use a text editor like Nano or Vim to create this file:
+
+nano prometheus.yml
+
+Inside prometheus.yml, you can specify your scraping targets, alerting rules, and other configurations according to your monitoring needs.
+
+5.Start Prometheus:
+
+After configuring Prometheus, you can start the Prometheus server using the following command:
+
+./prometheus --config.file=prometheus.yml
+
+This command will start Prometheus with the configuration defined in prometheus.yml.
+
+6.Access the Prometheus Web UI:
+
+Open your web browser and navigate to http://localhost:9090 to access the Prometheus web user interface. Here, you can explore metrics, run queries using PromQL, and configure alerting rules.
+======================================================='
